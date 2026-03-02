@@ -1,15 +1,14 @@
 export const distributeTasks = (records, agents) => {
-  const result = [];
   const totalAgents = agents.length;
 
-  records.forEach((record, index) => {
+  return records.map((record, index) => {
     const agentIndex = index % totalAgents;
 
-    result.push({
-      ...record,
+    return {
+      firstName: record.FirstName,
+      phone: record.Phone.toString(),
+      notes: record.Notes,
       assignedTo: agents[agentIndex]._id,
-    });
+    };
   });
-
-  return result;
 };

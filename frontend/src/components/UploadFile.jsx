@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiUploadCloud, FiFileText } from "react-icons/fi";
+import API from "../api/axios.js";
 
 export const UploadFile = () => {
   const [file, setFile] = useState(null);
@@ -8,13 +9,28 @@ export const UploadFile = () => {
     setFile(e.target.files[0]);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) {
       alert("Please select a file");
       return;
     }
 
-    console.log("Uploading:", file);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const { data } = await API.post("/tasks/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(data);
+      alert("File uploaded successfully");
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed");
+    }
   };
 
   return (

@@ -8,14 +8,37 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const uploadAndDistribute = asyncHandler(async (req, res) => {
   const agents = await Agent.find();
 
-  if (agents.length !== 5) {
-    throw { statusCode: 400, message: "Exactly 5 agents required" };
+  // ❌ No agents
+  if (!agents.length) {
+    throw { statusCode: 400, message: "No agents available to assign tasks" };
+  }
+
+  if (!req.file) {
+    throw { statusCode: 400, message: "File is required" };
   }
 
   const filePath = req.file.path;
+
   const workbook = XLSX.readFile(filePath);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const records = XLSX.utils.sheet_to_json(sheet);
+
+  if (!records.length) {
+    throw { statusCode: 400, message: "Uploaded file is empty" };
+  }
+
+  // Validate required headers
+  const requiredFields = ["FirstName", "Phone", "Notes"];
+  const fileHeaders = Object.keys(records[0]);
+
+  const isValid = requiredFields.every((field) => fileHeaders.includes(field));
+
+  if (!isValid) {
+    throw {
+      statusCode: 400,
+      message: "Invalid CSV format. Required fields: FirstName, Phone, Notes",
+    };
+  }
 
   const distributed = distributeTasks(records, agents);
 
@@ -25,7 +48,7 @@ export const uploadAndDistribute = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    message: "Tasks distributed successfully",
+    message: `Tasks distributed among ${agents.length} agents successfully`,
   });
 });
 

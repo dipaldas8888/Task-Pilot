@@ -1,10 +1,11 @@
 import { useState } from "react";
+import API from "../api/axios.js";
 
 export const AddAgent = () => {
   const [formdata, setformdata] = useState({
     name: "",
     email: "",
-    phone: "",
+    mobile: "",
     password: "",
   });
 
@@ -15,14 +16,19 @@ export const AddAgent = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Formdata submitted", formdata);
+    try {
+      const { data } = await API.post("/agents", formdata);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
 
     setformdata({
       name: "",
       email: "",
-      phone: "",
+      mobile: "",
       password: "",
     });
   };
@@ -66,8 +72,8 @@ export const AddAgent = () => {
           <label className="text-sm text-gray-400">Phone</label>
           <input
             type="text"
-            name="phone"
-            value={formdata.phone}
+            name="mobile"
+            value={formdata.mobile}
             onChange={handleChange}
             required
             className="w-full mt-2 p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 outline-none"
