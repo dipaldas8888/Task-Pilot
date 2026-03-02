@@ -1,37 +1,42 @@
-import React from "react";
-
-const agents = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@mail.com",
-    phone: "+91 9876543210",
-    tasks: 24,
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Sarah Smith",
-    email: "sarah@mail.com",
-    phone: "+91 9123456780",
-    tasks: 18,
-    status: "Inactive",
-  },
-  {
-    id: 3,
-    name: "David Lee",
-    email: "david@mail.com",
-    phone: "+91 9988776655",
-    tasks: 30,
-    status: "Active",
-  },
-];
+import React, { useEffect, useState } from "react";
+import API from "../api/axios";
 
 export const AgentsTable = () => {
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchAgents = async () => {
+    try {
+      const res = await API.get("/agents");
+
+      // 👇 IMPORTANT (because your data is inside res.data.data)
+      setAgents(res.data.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch agents");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  if (loading) {
+    return <p className="text-white p-4">Loading agents...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-400 p-4">{error}</p>;
+  }
+
   return (
     <div className="relative overflow-x-auto bg-gray-800 shadow-md rounded-xl border border-gray-700">
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-gray-700 flex justify-between items-center">
         <h2 className="text-white font-semibold text-lg">Agents List</h2>
+        <span className="text-sm text-gray-400">Total: {agents.length}</span>
       </div>
 
       <table className="w-full text-sm text-left text-gray-300">
@@ -39,45 +44,39 @@ export const AgentsTable = () => {
           <tr>
             <th className="px-6 py-3">Agent</th>
             <th className="px-6 py-3">Phone</th>
-            <th className="px-6 py-3">Tasks</th>
-            <th className="px-6 py-3">Status</th>
+            <th className="px-6 py-3">Created</th>
           </tr>
         </thead>
 
         <tbody>
-          {agents.map((agent) => (
-            <tr
-              key={agent.id}
-              className="border-b border-gray-700 hover:bg-gray-700 transition"
-            >
-              <td className="px-6 py-4">
-                <div>
+          {agents.length > 0 ? (
+            agents.map((agent) => (
+              <tr
+                key={agent._id}
+                className="border-b border-gray-700 hover:bg-gray-700 transition"
+              >
+                {/* NAME + EMAIL */}
+                <td className="px-6 py-4">
                   <p className="font-medium text-white">{agent.name}</p>
                   <p className="text-xs text-gray-400">{agent.email}</p>
-                </div>
-              </td>
+                </td>
 
-              <td className="px-6 py-4">{agent.phone}</td>
+                {/* PHONE */}
+                <td className="px-6 py-4">{agent.mobile}</td>
 
-              <td className="px-6 py-4">
-                <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">
-                  {agent.tasks} Tasks
-                </span>
-              </td>
-
-              <td className="px-6 py-4">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    agent.status === "Active"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-red-500/20 text-red-400"
-                  }`}
-                >
-                  {agent.status}
-                </span>
+                {/* CREATED DATE */}
+                <td className="px-6 py-4 text-gray-400 text-xs">
+                  {new Date(agent.createdAt).toLocaleDateString()}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="px-6 py-4 text-center" colSpan="3">
+                No agents found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
