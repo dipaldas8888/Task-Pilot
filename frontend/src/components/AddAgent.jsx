@@ -35,11 +35,9 @@ export const AddAgent = () => {
 
   return (
     <div className="col-span-12 bg-gray-800 p-6 m-5 rounded-2xl border border-gray-700 shadow-lg">
-      {/* HEADER */}
       <h2 className="text-xl font-bold text-white mb-6">➕ Add New Agent</h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-5">
-        {/* NAME */}
         <div className="col-span-12 md:col-span-6">
           <label className="text-sm text-gray-400">Agent Name</label>
           <input
@@ -53,7 +51,6 @@ export const AddAgent = () => {
           />
         </div>
 
-        {/* EMAIL */}
         <div className="col-span-12 md:col-span-6">
           <label className="text-sm text-gray-400">Email</label>
           <input
@@ -67,7 +64,6 @@ export const AddAgent = () => {
           />
         </div>
 
-        {/* PHONE */}
         <div className="col-span-12 md:col-span-6">
           <label className="text-sm text-gray-400">Phone</label>
           <input
@@ -81,7 +77,6 @@ export const AddAgent = () => {
           />
         </div>
 
-        {/* PASSWORD */}
         <div className="col-span-12 md:col-span-6">
           <label className="text-sm text-gray-400">Password</label>
           <input
@@ -95,7 +90,6 @@ export const AddAgent = () => {
           />
         </div>
 
-        {/* BUTTON */}
         <div className="col-span-12 flex justify-end mt-4">
           <button
             type="submit"
