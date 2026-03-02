@@ -10,7 +10,6 @@ export const AgentsTable = () => {
     try {
       const res = await API.get("/agents");
 
-      // 👇 IMPORTANT (because your data is inside res.data.data)
       setAgents(res.data.data);
     } catch (err) {
       console.error(err);
@@ -55,16 +54,13 @@ export const AgentsTable = () => {
                 key={agent._id}
                 className="border-b border-gray-700 hover:bg-gray-700 transition"
               >
-                {/* NAME + EMAIL */}
                 <td className="px-6 py-4">
                   <p className="font-medium text-white">{agent.name}</p>
                   <p className="text-xs text-gray-400">{agent.email}</p>
                 </td>
 
-                {/* PHONE */}
                 <td className="px-6 py-4">{agent.mobile}</td>
 
-                {/* CREATED DATE */}
                 <td className="px-6 py-4 text-gray-400 text-xs">
                   {new Date(agent.createdAt).toLocaleDateString()}
                 </td>
