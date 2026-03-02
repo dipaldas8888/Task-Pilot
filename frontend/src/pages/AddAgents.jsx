@@ -1,5 +1,9 @@
 import React from "react";
-
+import { AddAgent } from "../components/AddAgent";
 export const AddAgents = () => {
-  return <div>AddAgents</div>;
+  return (
+    <div>
+      <AddAgent />
+    </div>
+  );
 };
