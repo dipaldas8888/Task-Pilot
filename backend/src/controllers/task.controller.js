@@ -28,3 +28,24 @@ export const uploadAndDistribute = asyncHandler(async (req, res) => {
     message: "Tasks distributed successfully",
   });
 });
+
+export const getTasks = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const total = await Task.countDocuments();
+
+  const tasks = await Task.find()
+    .populate("assignedTo", "name email mobile")
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+    totalTasks: total,
+    data: tasks,
+  });
+});
